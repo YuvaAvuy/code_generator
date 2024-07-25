@@ -10,17 +10,17 @@ model = genai.GenerativeModel("gemini-pro")
 chat = model.start_chat(history=[])
 
 def generate_code(prompt):
-    response = chat.send_message(prompt, stream=True)
-    code = ""
-    for chunk in response:
-        try:
+    try:
+        response = chat.send_message(prompt)
+        code = ""
+        for chunk in response:
             if hasattr(chunk, 'text'):
                 code += chunk.text
             else:
                 code += "Response does not contain valid text."
-        except Exception as e:
-            return f"An error occurred: {e}"
-    return code
+        return code
+    except Exception as e:
+        return f"An error occurred: {e}"
 
 # Streamlit app
 st.title("Code Generation with Gemini LLM")
@@ -33,6 +33,3 @@ if st.button("Generate Code"):
         st.code(generated_code)
     else:
         st.warning("Please enter a prompt to generate code.")
-
-if __name__ == "__main__":
-    st.run()
